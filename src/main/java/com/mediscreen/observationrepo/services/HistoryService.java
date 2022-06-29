@@ -25,23 +25,38 @@ public class HistoryService {
         return histRepository.findAll();
     }
 
-    public Optional<Patient> getPatientHistoryById (String id){
-        return histRepository.findById(id);
+    public Optional<Patient> getPatientHistoryById (String id) throws PatHistIdNotFoundException {
+        Optional<Patient> patientHist;
+        patientHist = histRepository.findById(id);
+        if (patientHist.isEmpty()){
+            throw new PatHistIdNotFoundException("For Patient history id: "+id+" no history found!");
+        }
+        return patientHist;
     }
 
     @Transactional
     public Patient updatePatientHistory(Patient patient) throws PatHistIdNotFoundException {
 
         if (!histRepository.existsById(patient.getId())){
-            throw  new PatHistIdNotFoundException("For Patient id: "+patient.getId()+" no history found!");
+            throw  new PatHistIdNotFoundException("For Patient history id: "+patient.getId()+" no history found!");
         }
        return histRepository.save(patient);
     }
     @Transactional
     public void deletePatientHistoryById(String id) throws PatHistIdNotFoundException {
         if (!histRepository.existsById(id)){
-            throw  new PatHistIdNotFoundException("For Patient id: "+id+" no history found!");
+            throw  new PatHistIdNotFoundException("For Patient history id: "+id+" no history found!");
         }
         histRepository.deleteById(id);
+    }
+
+    public List<Patient>getPatientHistoryByPatId(Long id) throws PatHistIdNotFoundException {
+        List<Patient> patientHistLs;
+        patientHistLs = histRepository.findByPatId(id);
+        if (patientHistLs.isEmpty()){
+            throw new PatHistIdNotFoundException("For Patient id: "+id+" no history found!");
+        }
+        return patientHistLs;
+
     }
 }

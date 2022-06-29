@@ -31,19 +31,29 @@ public class HistoryController {
     }
 
     @GetMapping ("/getById")
-    public Patient getPatientHistById (@RequestParam String id){
-        Optional<Patient> patientHist = historyService.getPatientHistoryById(id);
+    public Patient getPatientHistById (@RequestParam String id) throws PatHistIdNotFoundException {
+        Optional<Patient> patientHist;
+        patientHist = historyService.getPatientHistoryById(id);
         if (patientHist.isEmpty()){
             throw  new NotFoundException("Patient with id: "+id+ " not found !");
         }
         return patientHist.get() ;
     }
 
+    @GetMapping ("/getByPatId")
+    public List<Patient> getPatientHistByPatId (@RequestParam Long id) throws PatHistIdNotFoundException {
+        List<Patient> patientHistLs;
+        patientHistLs = historyService.getPatientHistoryByPatId(id);
+        if (patientHistLs.isEmpty()){
+            throw new PatHistIdNotFoundException("Patient hist with id: "+id+ " not found !");
+        }
+        return patientHistLs ;
+    }
+
     @GetMapping ("/getAllPatientHistory")
     public List<Patient> getAllPatientsHist(){
         List<Patient> allPatientHistoryLs = historyService.getAllPatientHistory();
         return allPatientHistoryLs;
-
     }
 
     @PostMapping ("/updatePatientHistory")

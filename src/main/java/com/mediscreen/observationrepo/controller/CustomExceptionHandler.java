@@ -23,6 +23,4 @@ public class CustomExceptionHandler {
         ErrorResponse error = new ErrorResponse(INCORRECT_REQUEST, details);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
-
-
 }
