@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface HistRepository extends MongoRepository <Patient, String> {
 
-    @Query("{ 'id' : ?0 }")
+
     boolean existsById(String id);
 
     @Query("{'patId' : ?0 }")

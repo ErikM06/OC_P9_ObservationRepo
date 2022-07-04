@@ -5,8 +5,6 @@ import com.mediscreen.observationrepo.model.Patient;
 import com.mediscreen.observationrepo.services.HistoryService;
 import com.sun.jersey.api.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,7 +66,7 @@ public class HistoryController {
         return patientToUpdate;
     }
 
-    @DeleteMapping ("/deleteById")
+    @GetMapping ("/deleteById")
     public void deletePatHistoryById (@RequestParam String id){
         try {
             historyService.deletePatientHistoryById(id);
