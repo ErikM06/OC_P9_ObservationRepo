@@ -13,8 +13,8 @@ import java.util.List;
  *
  */
 @Document (collection = "patient")
-public class Patient {
 
+public class Patient {
     @Id
     private String id;
     @Field("patId")

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/patHistory")
+@RequestMapping("/pat-history")
 public class HistoryController {
 
     @Autowired
@@ -28,7 +28,7 @@ public class HistoryController {
         return historyService.addPatient(patient);
     }
 
-    @GetMapping ("/getById")
+    @GetMapping ("/get-by-id")
     public Patient getPatientHistById (@RequestParam String id) throws PatHistIdNotFoundException {
         Optional<Patient> patientHist;
         patientHist = historyService.getPatientHistoryById(id);
@@ -38,7 +38,7 @@ public class HistoryController {
         return patientHist.get() ;
     }
 
-    @GetMapping ("/getByPatId")
+    @GetMapping ("/get-by-pat-id")
     public List<Patient> getPatientHistByPatId (@RequestParam Long id) throws PatHistIdNotFoundException {
         List<Patient> patientHistLs;
         patientHistLs = historyService.getPatientHistoryByPatId(id);
@@ -48,14 +48,14 @@ public class HistoryController {
         return patientHistLs ;
     }
 
-    @GetMapping ("/getAllPatientHistory")
+    @GetMapping ("/get-all-patient-history")
     public List<Patient> getAllPatientsHist(){
         List<Patient> allPatientHistoryLs = historyService.getAllPatientHistory();
         return allPatientHistoryLs;
     }
 
-    @PostMapping ("/updatePatientHistory")
-    public Patient updatePatientHistory(@RequestParam Patient patient) {
+    @PostMapping ("/update-patient-history")
+    public Patient updatePatientHistory(@RequestBody Patient patient) {
         Patient patientToUpdate = null;
         try {
             patientToUpdate = historyService.updatePatientHistory(patient);
@@ -66,7 +66,7 @@ public class HistoryController {
         return patientToUpdate;
     }
 
-    @GetMapping ("/deleteById")
+    @GetMapping ("/delete-by-id")
     public void deletePatHistoryById (@RequestParam String id){
         try {
             historyService.deletePatientHistoryById(id);

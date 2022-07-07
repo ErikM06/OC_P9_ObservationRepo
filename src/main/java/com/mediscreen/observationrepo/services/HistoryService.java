@@ -35,12 +35,15 @@ public class HistoryService {
     }
 
     @Transactional
-    public Patient updatePatientHistory(Patient patient) throws PatHistIdNotFoundException {
-
-        if (!histRepository.existsById(patient.getId())){
+    public Patient updatePatientHistory( Patient patient) throws PatHistIdNotFoundException {
+        Optional<Patient> patientOpt = histRepository.findById(patient.getId());
+        if (patientOpt.isEmpty()){
             throw  new PatHistIdNotFoundException("For Patient history id: "+patient.getId()+" no history found!");
         }
-       return histRepository.save(patient);
+        Patient patientToChange = patientOpt.get();
+        patientToChange.setContent(patient.getContent());
+
+       return histRepository.save(patientToChange);
     }
     @Transactional
     public void deletePatientHistoryById(String id) throws PatHistIdNotFoundException {

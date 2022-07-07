@@ -17,4 +17,5 @@ public interface HistRepository extends MongoRepository <Patient, String> {
 
     @Query("{'patId' : ?0 }")
     List<Patient> findByPatId(Long id);
+
 }
