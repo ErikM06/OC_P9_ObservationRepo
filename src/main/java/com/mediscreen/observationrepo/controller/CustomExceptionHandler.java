@@ -17,7 +17,7 @@ public class CustomExceptionHandler {
     private static final String INCORRECT_REQUEST = "INCORRECT_REQUEST";
 
     @ExceptionHandler (value = PatHistIdNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException (PatHistIdNotFoundException ex, WebRequest request){
+    public ResponseEntity<ErrorResponse> handleNotFoundException (PatHistIdNotFoundException ex){
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse(INCORRECT_REQUEST, details);
