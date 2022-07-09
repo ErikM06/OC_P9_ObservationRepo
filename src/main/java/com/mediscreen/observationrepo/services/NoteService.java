@@ -1,7 +1,7 @@
 package com.mediscreen.observationrepo.services;
 
 import com.mediscreen.observationrepo.customExceptions.PatHistIdNotFoundException;
-import com.mediscreen.observationrepo.model.Patient;
+import com.mediscreen.observationrepo.model.PatientNote;
 import com.mediscreen.observationrepo.repository.HistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,21 +12,21 @@ import java.util.Optional;
 
 
 @Service
-public class HistoryService {
+public class NoteService {
 
     @Autowired
     HistRepository histRepository;
 
-    public Patient addPatient (Patient patient){
-    return histRepository.save(patient);
+    public PatientNote addPatient (PatientNote patientNote){
+    return histRepository.save(patientNote);
     }
 
-    public List<Patient> getAllPatientHistory (){
+    public List<PatientNote> getAllPatientHistory (){
         return histRepository.findAll();
     }
 
-    public Optional<Patient> getPatientHistoryById (String id) throws PatHistIdNotFoundException {
-        Optional<Patient> patientHist;
+    public Optional<PatientNote> getPatientHistoryById (String id) throws PatHistIdNotFoundException {
+        Optional<PatientNote> patientHist;
         patientHist = histRepository.findById(id);
         if (patientHist.isEmpty()){
             throw new PatHistIdNotFoundException("For Patient history id: "+id+" no history found!");
@@ -35,15 +35,15 @@ public class HistoryService {
     }
 
     @Transactional
-    public Patient updatePatientHistory( Patient patient) throws PatHistIdNotFoundException {
-        Optional<Patient> patientOpt = histRepository.findById(patient.getId());
+    public PatientNote updatePatientHistory(PatientNote patientNote) throws PatHistIdNotFoundException {
+        Optional<PatientNote> patientOpt = histRepository.findById(patientNote.getId());
         if (patientOpt.isEmpty()){
-            throw  new PatHistIdNotFoundException("For Patient history id: "+patient.getId()+" no history found!");
+            throw  new PatHistIdNotFoundException("For Patient history id: "+ patientNote.getId()+" no history found!");
         }
-        Patient patientToChange = patientOpt.get();
-        patientToChange.setContent(patient.getContent());
+        PatientNote patientNoteToChange = patientOpt.get();
+        patientNoteToChange.setContent(patientNote.getContent());
 
-       return histRepository.save(patientToChange);
+       return histRepository.save(patientNoteToChange);
     }
     @Transactional
     public void deletePatientHistoryById(String id) throws PatHistIdNotFoundException {
@@ -53,13 +53,13 @@ public class HistoryService {
         histRepository.deleteById(id);
     }
 
-    public List<Patient>getPatientHistoryByPatId(Long id) throws PatHistIdNotFoundException {
-        List<Patient> patientHistLs;
-        patientHistLs = histRepository.findByPatId(id);
-        if (patientHistLs.isEmpty()){
+    public List<PatientNote>getPatientHistoryByPatId(Long id) throws PatHistIdNotFoundException {
+        List<PatientNote> patientNoteHistLS;
+        patientNoteHistLS = histRepository.findByPatId(id);
+        if (patientNoteHistLS.isEmpty()){
             throw new PatHistIdNotFoundException("For Patient id: "+id+" no history found!");
         }
-        return patientHistLs;
+        return patientNoteHistLS;
 
     }
 }

@@ -2,12 +2,11 @@ package com.mediscreen.observationrepo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mediscreen.observationrepo.ObservationRepoApplication;
-import com.mediscreen.observationrepo.model.Patient;
-import com.mediscreen.observationrepo.services.HistoryService;
+import com.mediscreen.observationrepo.model.PatientNote;
+import com.mediscreen.observationrepo.services.NoteService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -36,17 +36,17 @@ public class HistoryControllerTest {
     MockMvc mvc;
 
     @MockBean
-    HistoryService historyService;
+    NoteService noteService;
 
     @Test
     void addPatientTest_shouldReturn_201() throws Exception {
         long patIdTest = 1;
-        Patient patient = new Patient("idTest",patIdTest, "contentTest", "familyTest");
+        PatientNote patientNote = new PatientNote("idTest",patIdTest, "contentTest", "familyTest");
 
-        Mockito.when(historyService.addPatient(any(Patient.class))).thenReturn(patient);
+        given(noteService.addPatient(any(PatientNote.class))).willReturn(patientNote);
 
         mvc.perform(post("/pat-history/add")
-                        .content(asJsonString(patient))
+                        .content(asJsonString(patientNote))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -58,9 +58,9 @@ public class HistoryControllerTest {
     void getPatientHistById_shouldReturn_200() throws Exception {
         String idTest = "idTest";
         long patIdTest = 1;
-        Optional<Patient> patientTest = Optional.of(new Patient(idTest, patIdTest, "contentTest", "familyTest"));
+        Optional<PatientNote> patientTest = Optional.of(new PatientNote(idTest, patIdTest, "contentTest", "familyTest"));
 
-        Mockito.when(historyService.getPatientHistoryById(idTest)).thenReturn(patientTest);
+        given(noteService.getPatientHistoryById(idTest)).willReturn(patientTest);
         mvc.perform(get("/pat-history/get-by-id")
                         .param("id", idTest)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -75,11 +75,11 @@ public class HistoryControllerTest {
         String idTest = "idTest";
         String idTest2 = "idTest2";
         long patIdTest = 1;
-        Patient patientTest1 = new Patient(idTest, patIdTest, "contentTest", "familyTest");
-        Patient patientTest2 = new Patient(idTest2, patIdTest, "contentTest2", "familyTest2");
-        List<Patient> patientListTest = new ArrayList<>(Arrays.asList(patientTest1,patientTest2));
+        PatientNote patientNoteTest1 = new PatientNote(idTest, patIdTest, "contentTest", "familyTest");
+        PatientNote patientNoteTest2 = new PatientNote(idTest2, patIdTest, "contentTest2", "familyTest2");
+        List<PatientNote> patientNoteListTest = new ArrayList<>(Arrays.asList(patientNoteTest1, patientNoteTest2));
 
-        Mockito.when(historyService.getPatientHistoryByPatId(patIdTest)).thenReturn(patientListTest);
+        given(noteService.getPatientHistoryByPatId(patIdTest)).willReturn(patientNoteListTest);
         mvc.perform(get("/pat-history/get-by-pat-id")
                         .param("id", String.valueOf(patIdTest))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,11 +95,11 @@ public class HistoryControllerTest {
         String idTest = "idTest";
         String idTest2 = "idTest2";
 
-        Patient patientTest1 = new Patient(idTest, 1L, "contentTest", "familyTest");
-        Patient patientTest2 = new Patient(idTest2, 2L, "contentTest2", "familyTest2");
-        List<Patient> patientListTest = new ArrayList<>(Arrays.asList(patientTest1,patientTest2));
+        PatientNote patientNoteTest1 = new PatientNote(idTest, 1L, "contentTest", "familyTest");
+        PatientNote patientNoteTest2 = new PatientNote(idTest2, 2L, "contentTest2", "familyTest2");
+        List<PatientNote> patientNoteListTest = new ArrayList<>(Arrays.asList(patientNoteTest1, patientNoteTest2));
 
-        Mockito.when(historyService.getAllPatientHistory()).thenReturn(patientListTest);
+        given(noteService.getAllPatientHistory()).willReturn(patientNoteListTest);
         mvc.perform(get("/pat-history/get-all-patient-history"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
@@ -111,12 +111,12 @@ public class HistoryControllerTest {
 
         String idTest = "idTest";
         long patIdTest = 1;
-        Patient patientTestChanged = new Patient(idTest, patIdTest, "contentTestHaveChanged", "familyTest");
+        PatientNote patientNoteTestChanged = new PatientNote(idTest, patIdTest, "contentTestHaveChanged", "familyTest");
 
-        Mockito.when(historyService.updatePatientHistory(any(Patient.class))).thenReturn(patientTestChanged);
+        given(noteService.updatePatientHistory(any(PatientNote.class))).willReturn(patientNoteTestChanged);
 
         mvc.perform(post("/pat-history/update-patient-history")
-                        .content(asJsonString(patientTestChanged))
+                        .content(asJsonString(patientNoteTestChanged))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())

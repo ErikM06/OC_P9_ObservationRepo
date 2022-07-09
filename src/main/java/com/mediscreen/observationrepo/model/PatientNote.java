@@ -1,20 +1,17 @@
 package com.mediscreen.observationrepo.model;
 
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.util.List;
 
 /**
  *
  */
 @Document (collection = "patient")
 
-public class Patient {
+public class PatientNote {
     @Id
     private String id;
     @Field("patId")
@@ -26,24 +23,24 @@ public class Patient {
 
     @Field("Patient")
     @JsonProperty("Patient")
-    private String family;
+    private String lastName;
 
 
 
-    public Patient() {
+    public PatientNote() {
     }
 
-    public Patient(String family,String content) {
+    public PatientNote(String lastName, String content) {
         this.content = content;
-        this.family=family;
+        this.lastName = lastName;
 
     }
 
-    public Patient(String id, long patId, String content, String family) {
+    public PatientNote(String id, long patId, String content, String lastName) {
         this.id = id;
         this.patId = patId;
         this.content = content;
-        this.family = family;
+        this.lastName = lastName;
     }
 
     @Override
@@ -78,11 +75,11 @@ public class Patient {
         this.content = content;
     }
 
-    public String getFamily() {
-        return family;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFamily(String family) {
-        this.family = family;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

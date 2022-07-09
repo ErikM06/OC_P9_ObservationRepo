@@ -1,13 +1,10 @@
 package com.mediscreen.observationrepo.controller;
 
 import com.mediscreen.observationrepo.customExceptions.PatHistIdNotFoundException;
-import com.mediscreen.observationrepo.model.Patient;
-import com.mediscreen.observationrepo.services.HistoryService;
+import com.mediscreen.observationrepo.model.PatientNote;
+import com.mediscreen.observationrepo.services.NoteService;
 import com.sun.jersey.api.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +21,7 @@ import java.util.Optional;
 public class HistoryController {
 
     @Autowired
-    HistoryService historyService;
+    NoteService noteService;
 
    /* @PostMapping ("/add")
     public ResponseEntity<Patient> addPatientHistory (@RequestBody Patient patient){
@@ -32,15 +29,15 @@ public class HistoryController {
     } */
 
     @PostMapping ("/add")
-    public Patient addPatientHistory (@RequestBody Patient patient, HttpServletResponse httpServletResponse) {
+    public PatientNote addPatientHistory (@RequestBody PatientNote patientNote, HttpServletResponse httpServletResponse) {
         httpServletResponse.setStatus(HttpServletResponse.SC_CREATED);
-        return historyService.addPatient(patient);
+        return noteService.addPatient(patientNote);
     }
 
     @GetMapping ("/get-by-id")
-    public Patient getPatientHistById (@RequestParam String id) throws PatHistIdNotFoundException {
-        Optional<Patient> patientHist;
-        patientHist = historyService.getPatientHistoryById(id);
+    public PatientNote getPatientHistById (@RequestParam String id) throws PatHistIdNotFoundException {
+        Optional<PatientNote> patientHist;
+        patientHist = noteService.getPatientHistoryById(id);
         if (patientHist.isEmpty()){
             throw  new NotFoundException("Patient with id: "+id+ " not found !");
         }
@@ -48,39 +45,39 @@ public class HistoryController {
     }
 
     @GetMapping ("/get-by-pat-id")
-    public List<Patient> getPatientHistByPatId (@RequestParam Long id) throws PatHistIdNotFoundException {
-        List<Patient> patientHistLs;
-        patientHistLs = historyService.getPatientHistoryByPatId(id);
-        if (patientHistLs.isEmpty()){
+    public List<PatientNote> getPatientHistByPatId (@RequestParam Long id) throws PatHistIdNotFoundException {
+        List<PatientNote> patientNoteHistLS;
+        patientNoteHistLS = noteService.getPatientHistoryByPatId(id);
+        if (patientNoteHistLS.isEmpty()){
             throw new PatHistIdNotFoundException("Patient hist with id: "+id+ " not found !");
         }
-        return patientHistLs ;
+        return patientNoteHistLS;
     }
 
     @GetMapping ("/get-all-patient-history")
-    public List<Patient> getAllPatientsHist(){
-        List<Patient> allPatientHistoryLs = historyService.getAllPatientHistory();
-        return allPatientHistoryLs;
+    public List<PatientNote> getAllPatientsHist(){
+        List<PatientNote> allPatientHistoryLNotes = noteService.getAllPatientHistory();
+        return allPatientHistoryLNotes;
     }
 
     @PostMapping ("/update-patient-history")
-    public Patient updatePatientHistory(@RequestBody Patient patient, HttpServletResponse httpServletResponse) {
-        Patient patientToUpdate = null;
+    public PatientNote updatePatientHistory(@RequestBody PatientNote patientNote, HttpServletResponse httpServletResponse) {
+        PatientNote patientNoteToUpdate = null;
         try {
-            patientToUpdate = historyService.updatePatientHistory(patient);
+            patientNoteToUpdate = noteService.updatePatientHistory(patientNote);
             httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
         catch (PatHistIdNotFoundException e){
             e.getMessage();
         }
-        return patientToUpdate;
+        return patientNoteToUpdate;
     }
 
     @GetMapping ("/delete-by-id")
     public void deletePatHistoryById (@RequestParam String id, HttpServletResponse httpServletResponse){
         try {
             httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
-            historyService.deletePatientHistoryById(id);
+            noteService.deletePatientHistoryById(id);
         } catch (PatHistIdNotFoundException e){
             e.getMessage();
         }
