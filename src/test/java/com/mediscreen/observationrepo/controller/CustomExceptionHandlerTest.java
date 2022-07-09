@@ -1,8 +1,9 @@
 package com.mediscreen.observationrepo.controller;
 
 import com.mediscreen.observationrepo.ObservationRepoApplication;
-import com.mediscreen.observationrepo.customExceptions.PatHistIdNotFoundException;
-import com.mediscreen.observationrepo.services.NoteService;
+import com.mediscreen.observationrepo.customExceptions.IdNotFoundException;
+import com.mediscreen.observationrepo.customExceptions.PatIdNotFoundException;
+import com.mediscreen.observationrepo.services.NotesService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(HistoryController.class)
+@WebMvcTest(NotesController.class)
 @ContextConfiguration(classes ={ObservationRepoApplication.class})
 public class CustomExceptionHandlerTest {
 
@@ -27,15 +28,27 @@ public class CustomExceptionHandlerTest {
     MockMvc mvc;
 
     @MockBean
-    NoteService noteService;
+    NotesService notesService;
 
     @Test
-    public void handleNotFoundException () throws Exception {
+    public void handlePatientIdNotFoundException () throws Exception {
 
         long id = 1L;
-        given(noteService.getPatientHistoryByPatId(any(Long.class))).willThrow(PatHistIdNotFoundException.class);
 
-        mvc.perform(get("/pat-history/get-by-pat-id")
+        given(notesService.getPatientNoteByPatId(any(Long.class))).willThrow(PatIdNotFoundException.class);
+
+        mvc.perform(get("/pat-notes/get-by-pat-id")
+                        .param("id",Long.toString(id))
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    public void handleIdNotFoundException() throws Exception {
+
+        long id = 1L;
+        given(notesService.getPatientNoteById(any(String.class))).willThrow(IdNotFoundException.class);
+
+        mvc.perform(get("/pat-notes/get-by-id")
                         .param("id",Long.toString(id))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());

@@ -3,9 +3,9 @@ package com.mediscreen.observationrepo.customExceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus (HttpStatus.NOT_FOUND)
-public class PatHistIdNotFoundException extends Exception{
+public class IdNotFoundException extends Exception{
 
-    public PatHistIdNotFoundException (String msg){
-        super("msg");
+    public IdNotFoundException(String msg){
+        super(msg);
     }
 }

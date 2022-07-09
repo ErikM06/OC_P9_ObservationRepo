@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
  */
 @Document (collection = "patient")
 
-public class PatientNote {
+public class PatientNotes {
     @Id
     private String id;
     @Field("patId")
@@ -27,16 +27,16 @@ public class PatientNote {
 
 
 
-    public PatientNote() {
+    public PatientNotes() {
     }
 
-    public PatientNote(String lastName, String content) {
+    public PatientNotes(String lastName, String content) {
         this.content = content;
         this.lastName = lastName;
 
     }
 
-    public PatientNote(String id, long patId, String content, String lastName) {
+    public PatientNotes(String id, long patId, String content, String lastName) {
         this.id = id;
         this.patId = patId;
         this.content = content;

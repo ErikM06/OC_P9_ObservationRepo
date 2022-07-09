@@ -1,9 +1,8 @@
 package com.mediscreen.observationrepo.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mediscreen.observationrepo.ObservationRepoApplication;
-import com.mediscreen.observationrepo.model.PatientNote;
-import com.mediscreen.observationrepo.services.NoteService;
+import com.mediscreen.observationrepo.model.PatientNotes;
+import com.mediscreen.observationrepo.services.NotesService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,33 +18,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(HistoryController.class)
-@ContextConfiguration(classes ={ObservationRepoApplication.class})
-public class HistoryControllerTest {
+@WebMvcTest(NotesController.class)
+public class NotesControllerTest {
 
     @Autowired
     MockMvc mvc;
 
     @MockBean
-    NoteService noteService;
+    NotesService notesService;
 
     @Test
     void addPatientTest_shouldReturn_201() throws Exception {
         long patIdTest = 1;
-        PatientNote patientNote = new PatientNote("idTest",patIdTest, "contentTest", "familyTest");
+        PatientNotes patientNotes = new PatientNotes("idTest",patIdTest, "contentTest", "familyTest");
 
-        given(noteService.addPatient(any(PatientNote.class))).willReturn(patientNote);
+        given(notesService.addPatient(any(PatientNotes.class))).willReturn(patientNotes);
 
-        mvc.perform(post("/pat-history/add")
-                        .content(asJsonString(patientNote))
+        mvc.perform(post("/pat-notes/add")
+                        .content(asJsonString(patientNotes))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -58,10 +55,10 @@ public class HistoryControllerTest {
     void getPatientHistById_shouldReturn_200() throws Exception {
         String idTest = "idTest";
         long patIdTest = 1;
-        Optional<PatientNote> patientTest = Optional.of(new PatientNote(idTest, patIdTest, "contentTest", "familyTest"));
+        Optional<PatientNotes> patientTest = Optional.of(new PatientNotes(idTest, patIdTest, "contentTest", "familyTest"));
 
-        given(noteService.getPatientHistoryById(idTest)).willReturn(patientTest);
-        mvc.perform(get("/pat-history/get-by-id")
+        given(notesService.getPatientNoteById(idTest)).willReturn(patientTest);
+        mvc.perform(get("/pat-notes/get-by-id")
                         .param("id", idTest)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -75,12 +72,12 @@ public class HistoryControllerTest {
         String idTest = "idTest";
         String idTest2 = "idTest2";
         long patIdTest = 1;
-        PatientNote patientNoteTest1 = new PatientNote(idTest, patIdTest, "contentTest", "familyTest");
-        PatientNote patientNoteTest2 = new PatientNote(idTest2, patIdTest, "contentTest2", "familyTest2");
-        List<PatientNote> patientNoteListTest = new ArrayList<>(Arrays.asList(patientNoteTest1, patientNoteTest2));
+        PatientNotes patientNotesTest1 = new PatientNotes(idTest, patIdTest, "contentTest", "familyTest");
+        PatientNotes patientNotesTest2 = new PatientNotes(idTest2, patIdTest, "contentTest2", "familyTest2");
+        List<PatientNotes> patientNotesListTest = new ArrayList<>(Arrays.asList(patientNotesTest1, patientNotesTest2));
 
-        given(noteService.getPatientHistoryByPatId(patIdTest)).willReturn(patientNoteListTest);
-        mvc.perform(get("/pat-history/get-by-pat-id")
+        given(notesService.getPatientNoteByPatId(patIdTest)).willReturn(patientNotesListTest);
+        mvc.perform(get("/pat-notes/get-by-pat-id")
                         .param("id", String.valueOf(patIdTest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -95,12 +92,12 @@ public class HistoryControllerTest {
         String idTest = "idTest";
         String idTest2 = "idTest2";
 
-        PatientNote patientNoteTest1 = new PatientNote(idTest, 1L, "contentTest", "familyTest");
-        PatientNote patientNoteTest2 = new PatientNote(idTest2, 2L, "contentTest2", "familyTest2");
-        List<PatientNote> patientNoteListTest = new ArrayList<>(Arrays.asList(patientNoteTest1, patientNoteTest2));
+        PatientNotes patientNotesTest1 = new PatientNotes(idTest, 1L, "contentTest", "familyTest");
+        PatientNotes patientNotesTest2 = new PatientNotes(idTest2, 2L, "contentTest2", "familyTest2");
+        List<PatientNotes> patientNotesListTest = new ArrayList<>(Arrays.asList(patientNotesTest1, patientNotesTest2));
 
-        given(noteService.getAllPatientHistory()).willReturn(patientNoteListTest);
-        mvc.perform(get("/pat-history/get-all-patient-history"))
+        given(notesService.getAllPatientNote()).willReturn(patientNotesListTest);
+        mvc.perform(get("/pat-notes/get-all-patient-notes"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
                 .andReturn();
@@ -111,12 +108,12 @@ public class HistoryControllerTest {
 
         String idTest = "idTest";
         long patIdTest = 1;
-        PatientNote patientNoteTestChanged = new PatientNote(idTest, patIdTest, "contentTestHaveChanged", "familyTest");
+        PatientNotes patientNotesTestChanged = new PatientNotes(idTest, patIdTest, "contentTestHaveChanged", "familyTest");
 
-        given(noteService.updatePatientHistory(any(PatientNote.class))).willReturn(patientNoteTestChanged);
+        given(notesService.updatePatientNote(any(PatientNotes.class))).willReturn(patientNotesTestChanged);
 
-        mvc.perform(post("/pat-history/update-patient-history")
-                        .content(asJsonString(patientNoteTestChanged))
+        mvc.perform(post("/pat-notes/update-patient-notes")
+                        .content(asJsonString(patientNotesTestChanged))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isAccepted())
@@ -127,7 +124,7 @@ public class HistoryControllerTest {
     void deletePatientHistory_shouldReturn_202() throws Exception {
         String idTest = "idTest";
 
-        mvc.perform(get("/pat-history/delete-by-id")
+        mvc.perform(get("/pat-notes/delete-by-id")
                         .param("id", idTest))
                 .andExpect(status().isAccepted());
     }
