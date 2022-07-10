@@ -30,16 +30,16 @@ public class NotesService {
         Optional<PatientNotes> patientHist;
         patientHist = notesRepository.findById(id);
         if (patientHist.isEmpty()){
-            throw new IdNotFoundException("in NoteService "+id+" not found!");
+            throw new IdNotFoundException("Patient notes with id: "+id+" not found!");
         }
         return patientHist;
     }
 
     @Transactional
-    public PatientNotes updatePatientNote(PatientNotes patientNotes) throws PatIdNotFoundException {
+    public PatientNotes updatePatientNote(PatientNotes patientNotes) throws IdNotFoundException {
         Optional<PatientNotes> patientOpt = notesRepository.findById(patientNotes.getId());
         if (patientOpt.isEmpty()){
-            throw  new PatIdNotFoundException("in NoteService patient id: "+ patientNotes.getId()+" not found!");
+            throw  new IdNotFoundException("Patient notes with id: "+ patientNotes.getId()+" not found!");
         }
         PatientNotes patientNotesToChange = patientOpt.get();
         patientNotesToChange.setContent(patientNotes.getContent());
@@ -49,7 +49,7 @@ public class NotesService {
     @Transactional
     public void deletePatientNoteById(String id) throws IdNotFoundException {
         if (!notesRepository.existsById(id)){
-            throw  new IdNotFoundException("in NoteService "+id+" not found!");
+            throw  new IdNotFoundException("Patient notes with id:"+id+" not found!");
         }
         notesRepository.deleteById(id);
     }
@@ -58,7 +58,7 @@ public class NotesService {
         List<PatientNotes> patientNotesHistLS;
         patientNotesHistLS = notesRepository.findByPatId(id);
         if (patientNotesHistLS.isEmpty()){
-            throw new PatIdNotFoundException("in NoteService patient id: "+id+ "not found!");
+            throw new PatIdNotFoundException("Patient with id: "+id+ "not found!");
         }
         return patientNotesHistLS;
 

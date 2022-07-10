@@ -35,18 +35,18 @@ public class NotesController {
         Optional<PatientNotes> patientHist;
         patientHist = notesService.getPatientNoteById(id);
         if (patientHist.isEmpty()){
-            throw new IdNotFoundException("Patient with id: "+id+ " not found !");
+            throw new IdNotFoundException("Patient notes with id: "+id+ " not found !");
         }
         return patientHist.get() ;
     }
 
     @GetMapping ("/get-by-pat-id")
-    public List<PatientNotes> getPatientNotesByPatId(@RequestParam Long id) {
+    public List<PatientNotes> getPatientNotesByPatId(@RequestParam Long id) throws PatIdNotFoundException {
         List<PatientNotes> patientNotesHistLS;
         try {
             patientNotesHistLS = notesService.getPatientNoteByPatId(id);
         } catch (PatIdNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new PatIdNotFoundException(e.getMessage());
         }
         return patientNotesHistLS;
     }
@@ -57,23 +57,26 @@ public class NotesController {
     }
 
     @PostMapping ("/update-patient-notes")
-    public PatientNotes updatePatientNotes(@RequestBody PatientNotes patientNotes, HttpServletResponse httpServletResponse){
+    public PatientNotes updatePatientNotes(@RequestBody PatientNotes patientNotes, HttpServletResponse httpServletResponse) throws IdNotFoundException {
         PatientNotes patientNotesToUpdate;
         try {
             patientNotesToUpdate = notesService.updatePatientNote(patientNotes);
             httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
         }
-        catch (PatIdNotFoundException e){
-            throw new RuntimeException();
+        catch (IdNotFoundException e){
+            throw new IdNotFoundException(e.getMessage());
         }
         return patientNotesToUpdate;
     }
 
     @GetMapping ("/delete-by-id")
     public void deletePatNotesById(@RequestParam String id, HttpServletResponse httpServletResponse) throws IdNotFoundException {
-
-        httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
-        notesService.deletePatientNoteById(id);
+        try {
+            httpServletResponse.setStatus(HttpServletResponse.SC_ACCEPTED);
+            notesService.deletePatientNoteById(id);
+        } catch (IdNotFoundException e){
+            throw new IdNotFoundException(e.getMessage());
+        }
 
 
     }
